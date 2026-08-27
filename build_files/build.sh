@@ -5,6 +5,12 @@ set -ouex pipefail
 # Copy the contents of system_files/ of the git repo to /
 cp -avf "/ctx/system_files"/. /
 
+# Trust the NGD-Root-CA in the system-wide store (dropped in
+# system_files/etc/pki/ca-trust/source/anchors). Firefox picks it up via
+# /etc/firefox/policies/policies.json (Certificates.Install), which the
+# system RPM and the Mozilla flatpak both honor.
+update-ca-trust extract
+
 ### Install packages
 
 # Packages can be installed from any enabled yum repo on the image.
