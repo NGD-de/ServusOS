@@ -16,6 +16,29 @@ cp -avf "/ctx/system_files"/. /
 dnf5 install -y tmux
 dnf5 install -y thunderbird
 
+# AD domain membership (realmd/sssd/adcli/krb5) and 802.1x cert enrollment
+# from AD CS via certmonger's SCEP client (targets the NDES role for EAP-TLS certs)
+dnf5 install -y \
+    realmd \
+    sssd \
+    sssd-ad \
+    sssd-tools \
+    adcli \
+    samba-common-tools \
+    krb5-workstation \
+    oddjob \
+    oddjob-mkhomedir \
+    authselect \
+    policycoreutils-python-utils \
+    certmonger \
+    nss-tools \
+    wpa_supplicant
+
+# certmonger needs to run persistently to track and renew enrolled certs;
+# sssd/realmd are left disabled here since `realm join` enables them at
+# runtime once the machine can actually reach a domain controller.
+systemctl enable certmonger.service
+
 # Use a COPR Example:
 #
 # dnf5 -y copr enable ublue-os/staging
